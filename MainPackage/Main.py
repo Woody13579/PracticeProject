@@ -3,11 +3,14 @@
 import pyodbc
 import requests
 import os
+from FunctionsPackage.Functions import *
 #from FunctionsPackage.Functions import *
 
 
-entries = os.listdir('C:\\Users\\Michael\\Desktop\\SQL Files')
-print(entries)
+x = getSQLFiles('C:\\Users\\Michael\\Desktop\\SQL Files')
+print(x)
 
-for filenames in entries:
-    print(filenames)
+for script in x:
+    query = sqlQuery(script)
+    print(query)
+    print('Execute')

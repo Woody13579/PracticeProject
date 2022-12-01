@@ -2,29 +2,31 @@
 
 import pyodbc
 import requests
-import textwrap 
+import textwrap
+import os
 
- 
 # From : https://www.quora.com/How-can-I-execute-already-created-SQL-scripts-in-Python
- 
-entries = os.listdir('C:\\Users\\Michael\\Desktop\\SQL Files')
-print(entries)
+# Starts by grabbing the names of all files within the file location provided
+def getSQLFiles(fileLocation):
+    entries = os.listdir(fileLocation)
+    SQLFilesList = [] 
+    for filenames in entries:
+        SQLFilesList.append(fileLocation + "\\" + filenames)
+    return SQLFilesList
+    # outputs a list so the function to execute the scripts needs to be able to accept a list
 
-for filenames in entries:
-    print(filenames) 
- 
- 
-def create_query_string(sql_full_path): 
-    with open(sql_full_path, 'r') as f_in: 
+
+def sqlQuery(SQLFilePath): 
+    with open(SQLFilePath, 'r') as f_in: 
         lines = f_in.read() 
  
     # remove any common leading whitespace from every line     
     query_string = textwrap.dedent("""{}""".format(lines)) 
  
     return query_string 
- 
- 
-def main(): 
+
+
+def executeScript(): 
     cnxn = pyodbc.connect('Driver={SQL Server};' 
                           'Server=placeholder;' 
                           'Database=placeholder;' 
@@ -32,24 +34,13 @@ def main():
  
     # declare a database cursor object
     cursor = cnxn.cursor() 
- 
-    query_string = create_query_string(r'path_to_sql') 
+    query_string = sqlQuery(r'path_to_sql') 
  
     # execute the SQL query string (returns the cursor object itself) 
     cursor.execute(query_string) 
- 
-    '''
-    # return the next row in the query 
-    row = cursor.fetchone() 
-    if row: 
-        print(row) 
-    '''
- 
+  
+    # Closing cursor an connection
     cursor.close() 
     cnxn.close() 
  
- 
-if __name__ == '__main__': 
-    main() 
-
 
